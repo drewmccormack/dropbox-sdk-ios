@@ -8,8 +8,6 @@
 
 #import "DBDeltaEntry.h"
 
-#import "DBMetadata.h"
-
 @implementation DBDeltaEntry
 
 @synthesize lowercasePath;

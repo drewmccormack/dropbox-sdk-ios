@@ -75,8 +75,8 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
     NSData *consumerSecret =
     [[baseCredentials objectForKey:kMPOAuthCredentialConsumerSecret] dataUsingEncoding:NSUTF8StringEncoding];
     unsigned char md[CC_SHA1_DIGEST_LENGTH];
-    CC_SHA1(consumerSecret.bytes, [consumerSecret length], md);
-    NSUInteger sha_32 = htonl(((NSUInteger *)md)[CC_SHA1_DIGEST_LENGTH/sizeof(NSUInteger) - 1]);
+    CC_SHA1(consumerSecret.bytes, (uint32_t)[consumerSecret length], md);
+    uint32_t sha_32 = htonl(((uint32_t *)md)[CC_SHA1_DIGEST_LENGTH/sizeof(uint32_t) - 1]);
     NSString *secret = [NSString stringWithFormat:@"%x", sha_32];
 
     CFUUIDRef uuid = CFUUIDCreate(NULL);
@@ -100,13 +100,12 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
                   consumerKey, secret, nonce, userIdStr];
         UIViewController *connectController = [[[DBConnectController alloc] initWithUrl:[NSURL URLWithString:urlStr] fromController:rootController session:self] autorelease];
         UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:connectController] autorelease];
-        navController.navigationBar.translucent = NO;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             connectController.modalPresentationStyle = UIModalPresentationFormSheet;
             navController.modalPresentationStyle = UIModalPresentationFormSheet;
         }
 
-        [rootController presentViewController:navController animated:YES completion:nil];
+        [rootController presentModalViewController:navController animated:YES];
     }
 }
 
